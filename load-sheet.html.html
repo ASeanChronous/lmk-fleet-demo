@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Load Sheet - LMK Fleet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .header-title {
+            text-align: center;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header-title p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .load-status {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #f39c12;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .section-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .auto-filled {
+            background: #e8f5e8;
+            color: #27ae60;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .form-input {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-input.auto-filled {
+            background: #e8f5e8;
+            border-color: #27ae60;
+            color: #2c3e50;
+        }
+        
+        .form-select {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #fafbfc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .textarea {
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .time-stamp {
+            background: #f8f9fa;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .time-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .time-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .time-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .time-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+        
+        .time-btn:disabled {
+            background: #27ae60;
+            cursor: not-allowed;
+        }
+        
+        .calculated-fields {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .calc-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .calc-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .calc-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .material-selector {
+            position: relative;
+        }
+        
+        .custom-material {
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .custom-material.show {
+            display: block;
+        }
+        
+        .approval-section {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #f39c12;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .approval-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .approval-icon {
+            font-size: 24px;
+        }
+        
+        .approval-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #856404;
+        }
+        
+        .signature-pad {
+            background: white;
+            border: 2px dashed #f39c12;
+            border-radius: 10px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #856404;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .approval-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 12px;
+            color: #856404;
+        }
+        
+        .action-buttons {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #e1e8ed;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .progress-indicator {
+            background: #e9ecef;
+            height: 4px;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 75%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        .field-help {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .quantity-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-input input {
+            flex: 1;
+        }
+        
+        .unit-toggle {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 60px;
+        }
+        
+        .unit-toggle.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <button class="back-btn">←</button>
+                <div class="header-actions">
+                    <button class="header-btn">💾 Draft</button>
+                    <button class="header-btn">📋 Template</button>
+                </div>
+            </div>
+            
+            <div class="header-title">
+                <h1>Load Sheet #2024-1547</h1>
+                <p>Job: Downtown Construction Site</p>
+            </div>
+            
+            <div class="load-status">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>In Progress</span>
+                </div>
+                <span>Started 12:30 PM</span>
+            </div>
+        </header>
+
+        <div class="progress-indicator">
+            <div class="progress-bar"></div>
+        </div>
+
+        <div class="main-content">
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">📋</div>
+                    <div class="section-title">Load Information</div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Customer <span class="auto-filled">Auto-filled</span>
+                        </label>
+                        <input type="text" class="form-input auto-filled" value="Miami Construction Corp" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Driver <span class="auto-filled">Auto-filled</span>
+                        </label>
+                        <input type="text" class="form-input auto-filled" value="Mike Johnson" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Truck Number <span class="auto-filled">Auto-filled</span>
+                        </label>
+                        <input type="text" class="form-input auto-filled" value="Unit #47" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Trailer Number <span class="auto-filled">Auto-filled</span>
+                        </label>
+                        <input type="text" class="form-input auto-filled" value="Trailer #T-89" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Job Name/Number
+                        </label>
+                        <input type="text" class="form-input" value="Downtown Site - Phase 2" placeholder="Enter job name or auto-generate">
+                        <div class="field-help">Will auto-generate if left blank</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🪨</div>
+                    <div class="section-title">Material Details</div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Material Type <span class="required">*</span>
+                        </label>
+                        <div class="material-selector">
+                            <select class="form-select" onchange="toggleCustomMaterial(this)">
+                                <option value="">Select material...</option>
+                                <option value="reject-sand">Reject Sand</option>
+                                <option value="drain-rock" selected>Drain Rock</option>
+                                <option value="road-mix">3/4 Road Mix/Chips</option>
+                                <option value="pitrun">Pitrun</option>
+                                <option value="x-out-dirt">X-Out Dirt</option>
+                                <option value="trash">Trash</option>
+                                <option value="topsoil">Topsoil</option>
+                                <option value="granite">Granite</option>
+                                <option value="custom">Custom Material...</option>
+                            </select>
+                            <div class="custom-material" id="customMaterial">
+                                <input type="text" class="form-input" placeholder="Enter custom material type">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            Quantity (Optional)
+                        </label>
+                        <div class="quantity-input">
+                            <input type="number" class="form-input" placeholder="15.5" step="0.1">
+                            <button class="unit-toggle active" onclick="toggleUnit(this, 'tons')">Tons</button>
+                            <button class="unit-toggle" onclick="toggleUnit(this, 'yards')">Yards</button>
+                        </div>
+                        <div class="field-help">Leave blank if quantity not required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Tracking Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">⏰</div>
+                    <div class="section-title">Time Tracking</div>
+                </div>
+                
+                <div class="time-inputs">
+                    <div class="time-stamp">
+                        <div class="time-label">Load Time</div>
+                        <div class="time-value">12:30 PM</div>
+                        <button class="time-btn" disabled>✓ Recorded</button>
+                    </div>
+                    
+                    <div class="time-stamp">
+                        <div class="time-label">Unload Time</div>
+                        <div class="time-value">--:--</div>
+                        <button class="time-btn" onclick="recordTime(this, 'unload')">📍 Record</button>
+                    </div>
+                </div>
+                
+                <div class="calculated-fields">
+                    <div class="calc-grid">
+                        <div class="calc-item">
+                            <div class="calc-label">Total Hours</div>
+                            <div class="calc-value">2.5</div>
+                        </div>
+                        <div class="calc-item">
+                            <div class="calc-label">Total Loads</div>
+                            <div class="calc-value">1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start/End Time Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">🕐</div>
+                    <div class="section-title">Shift Times</div>
+                </div>
+                
+                <div class="time-inputs">
+                    <div class="form-group">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" class="form-input" value="08:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">End Time</label>
+                        <input type="time" class="form-input" placeholder="Will auto-fill on completion">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <div class="section-icon">📝</div>
+                    <div class="section-title">Additional Notes</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Notes & Comments</label>
+                    <textarea class="form-input textarea" placeholder="Add any additional notes, special instructions, or observations..."></textarea>
+                    <div class="field-help">Include site conditions, delays, or special handling requirements</div>
+                </div>
+            </div>
+
+            <!-- Approval Section -->
+            <div class="approval-section">
+                <div class="approval-header">
+                    <span class="approval-icon">✍️</span>
+                    <span class="approval-title">Digital Approval</span>
+                </div>
+                
+                <div class="signature-pad" onclick="openSignaturePad()">
+                    📝 Tap to add digital signature
+                </div>
+                
+                <div class="approval-info">
+                    <div>
+                        <strong>Signed by:</strong><br>
+                        Mike Johnson (Driver)
+                    </div>
+                    <div>
+                        <strong>Timestamp:</strong><br>
+                        Will record on approval
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="action-btn btn-save">💾 Save Draft</button>
+            <button class="action-btn btn-submit">✅ Submit Load</button>
+        </div>
+    </div>
+
+    <!-- Demo Navigation -->
+    <div id="demoNav" style="
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        z-index: 10000;
+        display: flex;
+        gap: 10px;
+        font-size: 12px;
+    ">
+        <select onchange="navigateToDemo(this.value)" style="
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        ">
+            <option value="">Switch Demo</option>
+            <option value="fleet_landing_page.html">🏠 Landing Page</option>
+            <option value="shipment_tracking_complete.html">👥 Customer Portal</option>
+            <option value="driver_dashboard_mobile.html">🚛 Driver Dashboard</option>
+            <option value="admin_fleet_dashboard_final.html">⚙️ Admin Panel</option>
+        </select>
+        <span style="padding: 5px 10px; background: #667eea; border-radius: 5px;">
+            📋 Digital Load Sheet
+        </span>
+    </div>
+
+    <script>
+        function navigateToDemo(url) {
+            if (url) {
+                window.location.href = url;
+            }
+        }
+        
+        function toggleCustomMaterial(select) {
+            const customDiv = document.getElementById('customMaterial');
+            if (select.value === 'custom') {
+                customDiv.classList.add('show');
+            } else {
+                customDiv.classList.remove('show');
+            }
+        }
+        
+        function toggleUnit(button, unit) {
+            button.parentElement.querySelectorAll('.unit-toggle').forEach(btn => 
+                btn.classList.remove('active')
+            );
+            button.classList.add('active');
+            showNotification(`Unit changed to ${unit}`);
+        }
+        
+        function recordTime(button, type) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const timeValue = button.parentElement.querySelector('.time-value');
+            timeValue.textContent = timeString;
+            
+            button.textContent = '✓ Recorded';
+            button.disabled = true;
+            button.style.background = '#27ae60';
+            
+            updateCalculatedFields();
+            updateProgress();
+            
+            const action = type === 'load' ? 'Load started' : 'Unload completed';
+            showNotification(`${action} at ${timeString}`);
+            
+            // Auto-save form data
+            autoSaveForm();
+        }
+        
+        function updateCalculatedFields() {
+            const loadTime = document.querySelector('.time-stamp:first-child .time-value').textContent;
+            const unloadTime = document.querySelector('.time-stamp:last-child .time-value').textContent;
+            
+            if (loadTime !== '--:--' && unloadTime !== '--:--') {
+                // Calculate actual time difference
+                const load = new Date(`1970/01/01 ${loadTime}`);
+                const unload = new Date(`1970/01/01 ${unloadTime}`);
+                let diff = (unload - load) / (1000 * 60 * 60); // hours
+                
+                if (diff < 0) diff += 24; // Handle day crossover
+                
+                document.querySelector('.calc-value').textContent = diff.toFixed(1);
+                showNotification(`Total time: ${diff.toFixed(1)} hours calculated`);
+            }
+        }
+        
+        function updateProgress() {
+            const progressBar = document.querySelector('.progress-bar');
+            const loadTime = document.querySelector('.time-stamp:first-child .time-value').textContent;
+            const unloadTime = document.querySelector('.time-stamp:last-child .time-value').textContent;
+            const materialSelect = document.querySelector('.form-select');
+            const signature = document.querySelector('.signature-pad').textContent;
+            
+            let progress = 25; // Base progress for starting
+            
+            if (materialSelect.value) progress += 25;
+            if (loadTime !== '--:--') progress += 20;
+            if (unloadTime !== '--:--') progress += 20;
+            if (!signature.includes('Tap to add')) progress += 10;
+            
+            progressBar.style.width = progress + '%';
+        }
+        
+        function openSignaturePad() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+            `;
+            
+            const signaturePad = document.createElement('div');
+            signaturePad.style.cssText = `
+                background: white;
+                width: 90%;
+                max-width: 500px;
+                border-radius: 15px;
+                padding: 20px;
+            `;
+            
+            signaturePad.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>Digital Signature</h3>
+                    <button onclick="this.closest('div').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                </div>
+                <div style="border: 2px dashed #ccc; height: 200px; margin: 20px 0; display: flex; align-items: center; justify-content: center; background: #f9f9f9; border-radius: 10px;">
+                    <span style="color: #999;">Draw your signature here</span>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="this.closest('div').remove()" style="
+                        background: #6c757d;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                    ">Cancel</button>
+                    <button onclick="confirmSignature()" style="
+                        flex: 1;
+                        background: #27ae60;
+                        color: white;
+                        border: none;
+                        padding: 12px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                    ">Confirm Signature</button>
+                </div>
+            `;
+            
+            modal.appendChild(signaturePad);
+            document.body.appendChild(modal);
+            
+            window.confirmSignature = function() {
+                const signatureElement = document.querySelector('.signature-pad');
+                signatureElement.innerHTML = '✍️ Signature recorded<br><small>Mike Johnson - ' + new Date().toLocaleTimeString() + '</small>';
+                signatureElement.style.background = '#e8f5e8';
+                signatureElement.style.color = '#27ae60';
+                signatureElement.style.cursor = 'default';
+                
+                const timestampDiv = document.querySelector('.approval-info div:last-child');
+                timestampDiv.innerHTML = '<strong>Timestamp:</strong><br>' + new Date().toLocaleString();
+                
+                updateProgress();
+                showNotification('Digital signature recorded successfully');
+                modal.remove();
+            };
+        }
+        
+        function autoSaveForm() {
+            const formData = {
+                customer: document.querySelector('input[value="Miami Construction Corp"]').value,
+                driver: document.querySelector('input[value="Mike Johnson"]').value,
+                material: document.querySelector('.form-select').value,
+                loadTime: document.querySelector('.time-stamp:first-child .time-value').textContent,
+                unloadTime: document.querySelector('.time-stamp:last-child .time-value').textContent,
+                notes: document.querySelector('.textarea').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('currentLoadSheet', JSON.stringify(formData));
+            console.log('Form auto-saved');
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'error' ? '#e74c3c' : '#27ae60';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Enhanced form validation
+        document.querySelector('.btn-submit').addEventListener('click', function() {
+            const materialSelect = document.querySelector('.form-select');
+            const loadTime = document.querySelector('.time-stamp:first-child .time-value').textContent;
+            const unloadTime = document.querySelector('.time-stamp:last-child .time-value').textContent;
+            const signature = document.querySelector('.signature-pad').textContent;
+            
+            let errors = [];
+            
+            if (!materialSelect.value) {
+                errors.push('Material type is required');
+            }
+            
+            if (loadTime === '--:--') {
+                errors.push('Load time must be recorded');
+            }
+            
+            if (unloadTime === '--:--') {
+                errors.push('Unload time must be recorded');
+            }
+            
+            if (signature.includes('Tap to add')) {
+                errors.push('Digital signature is required');
+            }
+            
+            if (errors.length > 0) {
+                showNotification(`Please complete: ${errors.join(', ')}`, 'error');
+                return;
+            }
+            
+            // Show submission process
+            this.textContent = 'Submitting...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                showNotification('Load sheet submitted successfully!');
+                
+                // Show completion modal
+                const completionModal = document.createElement('div');
+                completionModal.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 40px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    z-index: 3000;
+                    text-align: center;
+                `;
+                
+                completionModal.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+                    <h3 style="color: #27ae60; margin-bottom: 15px;">Load Sheet Completed!</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Load #2024-1547 has been submitted successfully.</p>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="window.location.href='driver_dashboard_mobile.html'" style="
+                            flex: 1;
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            padding: 12px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">Back to Dashboard</button>
+                        <button onclick="location.reload()" style="
+                            background: #27ae60;
+                            color: white;
+                            border: none;
+                            padding: 12px 20px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">New Load Sheet</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(completionModal);
+                
+                // Clear saved data
+                localStorage.removeItem('currentLoadSheet');
+                
+            }, 2000);
+        });
+        
+        // Auto-save on form changes
+        document.querySelectorAll('input, select, textarea').forEach(input => {
+            input.addEventListener('change', autoSaveForm);
+        });
+        
+        // Load saved data on page load
+        window.addEventListener('load', () => {
+            const savedData = localStorage.getItem('currentLoadSheet');
+            if (savedData) {
+                showNotification('Restored previous session data');
+            }
+            
+            // Simulate some pre-filled data for demo
+            setTimeout(() => {
+                showNotification('Welcome Mike! Ready to start load sheet #2024-1547');
+            }, 1000);
+        });
+    </script>
+            button.textContent = '✓ Recorded';
+            button.disabled = true;
+            button.style.background = '#27ae60';
+            
+            updateCalculatedFields();
+            updateProgress();
+        }
+        
+        function updateCalculatedFields() {
+            const loadTime = document.querySelector('.time-stamp:first-child .time-value').textContent;
+            const unloadTime = document.querySelector('.time-stamp:last-child .time-value').textContent;
+            
+            if (loadTime !== '--:--' && unloadTime !== '--:--') {
+                document.querySelector('.calc-value').textContent = '3.2';
+            }
+        }
+        
+        function updateProgress() {
+            const progressBar = document.querySelector('.progress-bar');
+            const currentWidth = parseInt(progressBar.style.width) || 75;
+            
+            if (currentWidth < 100) {
+                progressBar.style.width = Math.min(currentWidth + 15, 100) + '%';
+            }
+        }
+        
+        function openSignaturePad() {
+            const signaturePad = document.querySelector('.signature-pad');
+            signaturePad.innerHTML = '✍️ Signature recorded<br><small>Mike Johnson - ' + new Date().toLocaleTimeString() + '</small>';
+            signaturePad.style.background = '#e8f5e8';
+            signaturePad.style.color = '#27ae60';
+            signaturePad.style.cursor = 'default';
+            
+            const timestampDiv = document.querySelector('.approval-info div:last-child');
+            timestampDiv.innerHTML = '<strong>Timestamp:</strong><br>' + new Date().toLocaleString();
+            
+            updateProgress();
+        }
+        
+        document.querySelector('.btn-submit').addEventListener('click', function() {
+            const materialSelect = document.querySelector('.form-select');
+            const loadTime = document.querySelector('.time-stamp:first-child .time-value').textContent;
+            const unloadTime = document.querySelector('.time-stamp:last-child .time-value').textContent;
+            const signature = document.querySelector('.signature-pad').textContent;
+            
+            if (!materialSelect.value) {
+                alert('Please select a material type');
+                return;
+            }
+            
+            if (loadTime === '--:--' || unloadTime === '--:--') {
+                alert('Please record both load and unload times');
+                return;
+            }
+            
+            if (signature.includes('Tap to add')) {
+                alert('Please add your digital signature');
+                return;
+            }
+            
+            alert('Load sheet submitted successfully!');
+        });
+    </script>
+</body>
+</html>
