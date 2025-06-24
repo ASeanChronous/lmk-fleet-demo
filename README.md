@@ -401,7 +401,7 @@ The system consists of four main components:
 
 ## 📞 Support and Feedback
 
-This interactive demo showcases the core functionality of the LMK Fleet Management System. For questions about implementation, customization, or additional features, please refer to the system documentation or contact the development team.
+This interactive demo showcases the core functionality of the LMK Fleet Management System. For questions about implementation, customization, or additional features, please refer to the system documentation & contact Sean Perkins (sean@webrandu.today).
 
 ### Demo Features vs. Production:
 - All GPS tracking is simulated for demo purposes
@@ -413,4 +413,5 @@ This interactive demo showcases the core functionality of the LMK Fleet Manageme
 
 *Last Updated: June 2025*  
 *Version: Interactive Demo 1.0*  
-*Built for: Ryan's Hauling Operations*
+*Built for: LMK LLC*
+*Built by Sean Perkins (ASeanChronous) for WeBrandU*
